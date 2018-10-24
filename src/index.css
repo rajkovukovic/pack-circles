@@ -12,3 +12,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+#root {
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.range-container {
+  min-width: 300px;
+  max-width: 300px;
+  padding: 20px 20px 30px;
+}
+
+.circle-container {
+  border: 1px solid black;
+  min-height: 200px;
+}
+
+.svg-circle {
+  fill: rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease;
+}
