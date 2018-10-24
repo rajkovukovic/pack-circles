@@ -34,7 +34,11 @@ code {
   min-height: 200px;
 }
 
+/* .svg-circle-container, */
+.svg-circle {
+  transition: transform 1s ease-in;
+}
+
 .svg-circle {
   fill: rgba(0, 0, 0, 0.1);
-  transition: transform 0.4s ease;
 }

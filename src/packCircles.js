@@ -12,7 +12,7 @@ const generateCircles = count => {
   return result
 }
 
-const Slide = {
+const Direction = {
   left: -1,
   right: 1
 }
@@ -34,11 +34,11 @@ const offsetCirclesX = (circles, offsetX) => {
 const packCircles = ({
   circles: unsortedCircles,
   laneWidth: laneWidthWithPadding,
-  paddingTop = 0,
-  paddingBottom = 0,
-  paddingLeft = 0,
-  paddingRight = 0,
-  circleSpacing = 10
+  paddingTop = 10,
+  paddingBottom = 10,
+  paddingLeft = 10,
+  paddingRight = 10,
+  circleSpacing = 20
 }) => {
   const laneWidth = laneWidthWithPadding - paddingLeft - paddingRight
   let circles = [...unsortedCircles]
@@ -46,7 +46,7 @@ const packCircles = ({
   circles.sort((circle1, circle2) => circle2.r - circle1.r)
   // packing circles
   let firstRow = true
-  let lastSlide = Slide.right // -1 -> shift left, +1 -> shift right, 0 -> unassigned
+  let nextSlideDirection = Direction.left // -1 -> shift left, +1 -> shift right, 0 -> unassigned
   let tailingCircles = [] // circles in "last row" sorted by x coordinate from left to right
   let currentBottomY = paddingTop
 
@@ -71,7 +71,7 @@ const packCircles = ({
         const rightCircle = tailingCircles[tailingCircles.length - 1]
         // if first row in lane
         if (rightCircle.x + rightCircle.r + circleSpacing + 2 * circle.r < laneWidth) {
-          if (lastSlide === Slide.right) {
+          if (nextSlideDirection === Direction.left) {
             // insert current "circle" on the left side of row
             circle.x = circle.r
             circle.y = leftCircle.y
@@ -84,7 +84,7 @@ const packCircles = ({
             circle.y = rightCircle.y
             tailingCircles.push(circle)
           }
-          lastSlide = -lastSlide
+          nextSlideDirection = -nextSlideDirection
           return circle
         }
         else {
@@ -104,10 +104,14 @@ const packCircles = ({
       }
       return circle
     })
-  centerTailingCirclesHorizontally(tailingCircles, laneWidth)
+  if (tailingCircles.length > 0) {
+    currentBottomY = Math.max(...tailingCircles.map(tailingCircle => tailingCircle.y + tailingCircle.r)) + circleSpacing
+    centerTailingCirclesHorizontally(tailingCircles, laneWidth)
+  }
   return {
     circles: offsetCirclesX(circles, paddingLeft),
-    laneHeight: currentBottomY + paddingBottom
+    // ...  - circleSpacing ... because currentBottomY contains circleSpacing bellow circle
+    laneHeight: currentBottomY - circleSpacing + paddingBottom
   }
 }
 

@@ -7,7 +7,7 @@ import {
   packCircles
 } from './packCircles'
 
-const CIRCLE_COUNT = 100
+const CIRCLE_COUNT = 3000
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class App extends Component {
     }
   }
 
-  repositionCircles({laneWidth, rawCircles = this.state.rawCircles, doSetState = true}) {
+  repositionCircles({ laneWidth, rawCircles = this.state.rawCircles, doSetState = true }) {
     const nextState = {
       laneWidth,
       rawCircles: rawCircles,
@@ -40,35 +40,43 @@ class App extends Component {
 
   render() {
     const { laneWidth, laneHeight, circles } = this.state
+    const semiLaneWidth = laneWidth / 2
     return (
       <>
         <div className='range-container'>
           <InputRange
             minValue={100}
-            maxValue={600}
+            maxValue={1200}
             value={laneWidth}
             onChange={value => this.repositionCircles({ laneWidth: value })}
           />
         </div>
-        <div className='circle-container' style={{width: laneWidth}}>
+        <div className='circle-container' style={{ width: laneWidth }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={laneWidth}
             height={laneHeight}
             viewBox={`0 0 ${laneWidth} ${laneHeight}`}
           >
-            {(circles || []).map(({id, r, x, y}) => (
-              <circle
-                className='svg-circle'
-                key={id}
-                r={r}
-                cx={0}
-                cy={0}
-                style={{
-                  transform: `translate(${x}px, ${y}px)`
-                }}
-              />
-            ))}
+            <g
+              className='svg-circle-container'
+              style={{
+                transform: `translateX(${semiLaneWidth}px)`
+              }}
+            >
+              {(circles || []).map(({ id, r, x, y }) => (
+                <circle
+                  className='svg-circle'
+                  key={id}
+                  r={r}
+                  cx={0}
+                  cy={0}
+                  style={{
+                    transform: `translate(${semiLaneWidth - x}px, ${y}px)`
+                  }}
+                />
+              ))}
+            </g>
           </svg>
         </div>
       </>
